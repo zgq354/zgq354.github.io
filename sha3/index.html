@@ -145,6 +145,7 @@ function getReadableSizeStr(bytes) {
 function calculateFileHash(file) {
   let { name, size } = file;
   document.querySelector('#filename').innerHTML = name;
+  document.querySelector('#result').innerHTML = 'Waiting...'
   // init
   let chunkSize = 1024 * 1024;
   let read = getStreamReader(file, chunkSize);
