@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Sha3-256 File Hash Online</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Sha3-256 File Hash Online</h2>
+    <div class="file-input">
+      <div class="drag">
+        <span class="drag-text"><label for="file">Choose a file</label> or drag it here</span>
+        <span class="drop-text">Drop it and start</span>
+        <span class="processing-text">Processing file "<span id="filename">xxx.pdf</span>" ... <span id="progress">10%</span></span>
+      </div>
+      <input type="file" name="file" id="file">
+    </div>
+    <div class="result-box">
+      <p id="msg" class="hide"></p>
+      <textarea id="result" placeholder="Result"></textarea>
+    </div>
+    <div id="footer">© 2018 <a href="https://blog.izgq.net/" target="_blank">zgq354</a></div>
+  </div>
+</body>
+<script id="worker" type="javascript/worker">
+let hasher;
+self.addEventListener('message', function (e) {
+  let msg = e.data;
+  switch (msg.type) {
+    case 'url':
+      let { url } = msg;
+      url = url.substring(0, url.lastIndexOf('/') + 1);
+      importScripts(url + 'sha3.js');
+      // init
+      hasher = sha3_256.create();
+      break;
+    case 'update':
+      hasher.update(msg.input);
+      self.postMessage({
+        type: 'success'
+      });
+      break;
+    case 'result':
+      self.postMessage({
+        type: 'result',
+        result: hasher.hex(),
+      });
+      self.close();
+      break;
+    default:
+      break;
+  }
+}, false);
+</script>
+<script>
+// UI
+let dragElement = document.querySelector('.file-input');
+let progressElement = document.querySelector('#progress');
+dragElement.addEventListener('dragover', function (e) {
+  e.preventDefault();
+  dragElement.classList.add('drag-over');
+});
+dragElement.addEventListener('dragleave', function (e) {
+  e.preventDefault();
+  // 避免子元素的 dragleave 事件影响
+  if (e.target === dragElement) {
+    dragElement.classList.remove('drag-over');
+  }
+});
+dragElement.addEventListener('drop', function (e) {
+  e.preventDefault();
+  dragElement.classList.remove('drag-over');
+  dragElement.classList.add('processing');
+  progressElement.innerHTML = '0%';
+
+  // start
+  let file = e.dataTransfer.files[0];
+  calculateFileHash(file);
+});
+
+// Select File
+document.querySelector('input[type="file"]').addEventListener('change', function (e) {
+  if (!this.files) return;
+  let file = this.files[0];
+  dragElement.classList.add('processing');
+  calculateFileHash(file);
+});
+
+function updateProgress(str) {
+  progressElement.innerHTML = str;
+}
+
+// load Web Worker
+let blob = new Blob([document.querySelector("#worker").textContent]);
+let workerUrl = window.URL.createObjectURL(blob);
+
+function getWorker() {
+  let worker = new Worker(workerUrl);
+  worker.postMessage({
+    type: 'url',
+    url: location.href,
+  });
+
+  return {
+    updateData: function (data) {
+      worker.postMessage({
+        type: 'update',
+        input: data
+      }, [data]);
+      return new Promise(function (resolve, reject) {
+        worker.onmessage = resolve;
+      });
+    },
+    getResult: function () {
+      worker.postMessage({
+        type: 'result'
+      });
+      return new Promise(function (resolve, reject) {
+        worker.onmessage = function (e) {
+          msg = e.data;        
+          resolve(msg.result);
+        };
+      });
+    }
+  };
+}
+
+// 把文件大小转换为易读的单位
+function getReadableSizeStr(bytes) {
+  const units = ['B', 'KiB', 'MiB', 'GiB'];
+  let pointer = 0;
+  while (bytes > 1024 && pointer < units.length) {
+    bytes /= 1024;
+    pointer++;
+  }
+  // 小数点后两位
+  bytes = Math.round(bytes * 100) / 100;
+  return bytes + units[pointer];
+}
+
+// 计算哈希
+function calculateFileHash(file) {
+  let { name, size } = file;
+  document.querySelector('#filename').innerHTML = name;
+  // init
+  let chunkSize = 1024 * 1024;
+  let read = getStreamReader(file, chunkSize);
+  let worker = getWorker();
+  let startTime = Date.now();
+  // progress
+  let count = 0;
+  let total = Math.ceil(size / chunkSize);
+  // start
+  (async () => {
+    document.querySelector('#msg').classList.add('hide');
+    let data;
+    while (data = await read()) {
+      await worker.updateData(data);
+      count++;
+      let progress = Math.round(count * 100 / total);
+      updateProgress(progress + '%');
+    }
+    // Update UI
+    document.querySelector('#result').innerHTML = await worker.getResult();
+    document.querySelector('#msg').innerHTML = `File: <b>${name}</b>, Size: <b>${getReadableSizeStr(size)}</b>, time: <b>${Date.now() - startTime} ms</b>`;
+    document.querySelector('#msg').classList.remove('hide');
+    dragElement.classList.remove('processing');
+  })();
+}
+
+// 分块读取文件内容
+function getStreamReader(file, chunkSize = 1024 * 1024) {
+  let reader = new FileReader();
+  let offset = 0;
+  return function () {
+    return new Promise(function (resolve, reject) {
+      if (offset >= file.size) return resolve(null);
+      reader.onloadend = function () {
+        resolve(reader.result);
+        offset = offset + chunkSize;
+      }
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(file.slice(offset, offset + chunkSize));
+    });
+  }
+}
+
+</script>
+</html>

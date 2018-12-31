@@ -1,0 +1,125 @@
+a {
+  color: #888;
+}
+
+a:visited {
+  color: #888;
+}
+
+.hide {
+  display: none;
+}
+
+.container {
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+.container h2 {
+  padding: 5px;
+}
+
+.file-input {
+  box-sizing: border-box;
+  position: relative;
+  width: 100%;
+  height: 150px;
+  padding: 5px;
+  transition: linear .1s;
+}
+
+/* default */
+.drop-text,
+.processing-text {
+  display: none;
+}
+
+/* drag-over */
+.drag-over,
+.processing {
+  padding: 8px;
+  background: #eee;
+}
+
+.drag-over .drag,
+.processing .drag {
+  border-color: #888;
+}
+
+.drag-over .drop-text {
+  display: inline;
+}
+
+.drag-over .drag-text,
+.drag-over .processing-text {
+  display: none;
+}
+
+/* processing */
+.processing .drop-text,
+.processing .drag-text {
+  display: none;
+}
+
+.processing .processing-text {
+  display: inline;
+}
+
+.drag {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  color: #555;
+  border: #666 dashed 2px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+  cursor: default;
+}
+
+.drag label {
+  cursor: pointer;
+  font-weight: bolder;
+}
+
+.drag label:hover {
+  color: #000;
+}
+
+.result-box {
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 10px;
+  padding: 5px;
+}
+
+#msg {
+  margin: 0;
+  margin-bottom: 5px;
+}
+
+#result {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100px;
+  padding: 5px;
+  border: 1px dashed;
+  resize: none;
+}
+
+#result:focus {
+  outline: 0;
+}
+
+#file {
+  display: none;
+}
+
+#footer {
+  padding: 1rem 1rem 1.5rem;
+  text-align: center;
+  font-size: smaller;
+  color: #888;
+}
