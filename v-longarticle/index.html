@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Vae+ 长文分割助手</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="header">
+    <h1>V+ 长文分割助手</h1>
+    <p class="description">众所周知，V家发长文时每一块文字最长只支持500字，当我们在便签之类的地方，写了很长很长的文想复制粘贴过来的时候，因为500字符的限制，想找到分开的位置也变得十分麻烦，于是就有了这个小网页~</p>
+  </div>
+  <div class="text-input">
+    <div id="char-count">0 字</div>
+    <textarea id="full-text" cols="30" rows="10" placeholder="文字粘贴在这里"></textarea>
+    <p class="text-center"><button id="load-example">加载示例</button></p>
+  </div>
+  <div id="result-wrap" class="hide">
+    <h3 class="text-center">分割结果</h3>
+    <div id="result-list"></div>
+  </div>
+  <div class="footer">
+    <p>Made with 💗 by <a href="https://blog.izgq.net/about-me.html" target="_blank">01</a>.</p>
+    <p class="sub-footer">~音乐纯粹，爱V绝对~</p>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>

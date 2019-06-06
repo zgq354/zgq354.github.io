@@ -1,0 +1,76 @@
+
+body {
+  font-size: 14px;
+  font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
+  color: #1a1a1a;
+}
+
+a {
+  color: #6ca5ff;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+a:hover {
+  color: #363636;
+}
+
+.hide {
+  display: none;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 18px;
+  text-align: center;
+}
+
+.description {
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: #666;
+}
+
+.text-input {
+  margin-top: -5px;
+}
+
+#char-count {
+  text-align: right;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 2px;
+}
+
+textarea {
+  width: 100%;
+  height: 400px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+#result-list textarea {
+  margin-bottom: 20px;
+  height: 250px;
+}
+
+.footer {
+  color: #999;
+  font-size: 13px;
+  text-align: center;
+  letter-spacing: 1px;
+  padding: 10px 10px 20px;
+}
+
+.footer p {
+  margin-block-start: 8px;
+  margin-block-end: 0;
+  margin-bottom: 8px;
+}
+
+.sub-footer {
+  font-size: 12px;
+}
